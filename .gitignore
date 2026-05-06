@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 虚拟环境
+venv/
+.venv/
+env/
+
+# 环境变量
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 测试报告（可选择是否忽略）
+# reports/
+
+# 截图
+reports/screenshots/*.png
+
+# 临时文件
+temp_*.png
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Allure
+reports/html/results/
+reports/html/history/

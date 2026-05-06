@@ -1,0 +1,231 @@
+# ============================
+# 图片识别测试数据
+# ============================
+# 数据驱动 test_image_recognition.py 和业务图片验证用例
+#
+# 结构说明：
+#   template_match:      模板匹配测试数据（单尺度 + 多尺度）
+#   feature_match:       特征点匹配测试数据（ORB 算法）
+#   ssim_compare:        SSIM 图片对比测试数据
+#   ocr_recognition:     OCR 文字识别测试数据
+#   color_histogram:     颜色直方图分析测试数据
+#   business_scenarios:  业务场景图片验证数据
+
+# ========== 一、模板匹配测试数据 ==========
+
+template_match:
+  # 单尺度模板匹配
+  basic_cases:
+    - name: "Logo 匹配"
+      locator: ["ID", "logo"]
+      baseline_image: "baseline_images/logo.png"
+      threshold: 0.8
+      expected_match: true
+
+    - name: "导航图标匹配"
+      locator: ["CSS_SELECTOR", ".nav-icon"]
+      baseline_image: "baseline_images/nav_icon.png"
+      threshold: 0.8
+      expected_match: true
+
+    - name: "品牌水印验证"
+      locator: ["CSS_SELECTOR", ".watermark"]
+      baseline_image: "baseline_images/watermark.png"
+      threshold: 0.85
+      expected_match: true
+
+  # 多尺度模板匹配（响应式布局）
+  multiscale_cases:
+    - name: "响应式 Banner"
+      locator: ["CSS_SELECTOR", ".banner"]
+      baseline_image: "baseline_images/banner.png"
+      threshold: 0.8
+      expected_match: true
+      scale_range: [0.5, 1.5]
+
+    - name: "缩略图匹配"
+      locator: ["CSS_SELECTOR", ".thumbnail"]
+      baseline_image: "baseline_images/thumbnail.png"
+      threshold: 0.75
+      expected_match: true
+      scale_range: [0.5, 1.5]
+
+# ========== 二、特征点匹配测试数据 ==========
+
+feature_match:
+  # ORB 特征点匹配（旋转/缩放/透视变换场景）
+  cases:
+    - name: "旋转图标匹配"
+      locator: ["CSS_SELECTOR", ".rotating-icon"]
+      baseline_image: "baseline_images/icon.png"
+      min_match_count: 5
+      expected_match: true
+      note: "适用于加载动画等旋转元素"
+
+    - name: "缩放后的验证码"
+      locator: ["CSS_SELECTOR", ".captcha-img"]
+      baseline_image: "baseline_images/captcha_sample.png"
+      min_match_count: 8
+      expected_match: true
+      note: "验证码图片尺寸不确定时使用"
+
+# ========== 三、SSIM 图片对比测试数据 ==========
+
+ssim_compare:
+  cases:
+    - name: "图表渲染一致性"
+      locator: ["CSS_SELECTOR", ".chart"]
+      baseline_image: "baseline_images/chart_expected.png"
+      threshold: 0.95
+      expected_similar: true
+      note: "回归测试 - 验证图表渲染是否与基准一致"
+
+    - name: "页面布局稳定性"
+      locator: ["CSS_SELECTOR", ".dashboard"]
+      baseline_image: "baseline_images/dashboard_expected.png"
+      threshold: 0.90
+      expected_similar: true
+      note: "布局可能有微小变化，阈值适当降低"
+
+# ========== 四、OCR 文字识别测试数据 ==========
+
+ocr_recognition:
+  # Tesseract OCR
+  tesseract_cases:
+    - name: "Canvas 文字识别"
+      locator: ["CSS_SELECTOR", ".canvas-text"]
+      engine: "tesseract"
+      lang: "chi_sim+eng"
+      expected_contains: "预期文字"
+      preprocess: true
+      note: "Canvas 绘制的文字无法用 getText() 获取"
+
+    - name: "验证码识别"
+      locator: ["ID", "captcha-image"]
+      engine: "tesseract"
+      lang: "eng"
+      expected_contains: ""
+      preprocess: true
+      note: "验证码识别准确率有限，建议配合容错机制"
+
+    - name: "水印文字识别"
+      locator: ["CSS_SELECTOR", ".watermark-text"]
+      engine: "tesseract"
+      lang: "eng"
+      expected_contains: "CONFIDENTIAL"
+      preprocess: true
+
+  # PaddleOCR（中文精度更高，需安装 paddleocr）
+  paddleocr_cases:
+    - name: "中文 Canvas 文字"
+      locator: ["CSS_SELECTOR", ".canvas-cn"]
+      engine: "paddleocr"
+      lang: "ch"
+      expected_contains: "预期中文"
+      preprocess: false
+      note: "PaddleOCR 不需要预处理"
+
+# ========== 五、颜色直方图分析测试数据 ==========
+
+color_histogram:
+  cases:
+    - name: "Banner 品牌色验证"
+      locator: ["CSS_SELECTOR", ".brand-banner"]
+      expected_dominant_color: "#1890ff"
+      brightness_min: 100
+      brightness_max: 200
+      note: "验证 Banner 主色调是否符合品牌色规范"
+
+    - name: "错误页面颜色检测"
+      locator: ["CSS_SELECTOR", ".error-page"]
+      expected_dominant_color: "#ff4d4f"
+      note: "检测错误状态页面的红色警告区域"
+
+# ========== 六、业务场景图片验证数据 ==========
+
+business_scenarios:
+  # 登录页面视觉验证
+  login_page_visual:
+    logo_match:
+      locator: ["CSS_SELECTOR", ".login-logo img"]
+      baseline: "baseline_images/login_logo.png"
+      method: "template"
+      threshold: 0.8
+    error_color:
+      locator: ["CSS_SELECTOR", ".error-msg"]
+      expected_color_name: "red"
+      css_property: "color"
+    error_contrast:
+      text_locator: ["CSS_SELECTOR", ".error-msg"]
+      bg_locator: ["CSS_SELECTOR", ".login-form"]
+      min_ratio: 3.0
+
+  # 首页元素视觉验证
+  home_page_visual:
+    hero_banner_match:
+      locator: ["CSS_SELECTOR", ".hero-banner"]
+      baseline: "baseline_images/hero_banner.png"
+      method: "multiscale"
+      threshold: 0.8
+    navigation_icons:
+      - locator: ["CSS_SELECTOR", ".nav-home"]
+        baseline: "baseline_images/icon_home.png"
+      - locator: ["CSS_SELECTOR", ".nav-cart"]
+        baseline: "baseline_images/icon_cart.png"
+      - locator: ["CSS_SELECTOR", ".nav-user"]
+        baseline: "baseline_images/icon_user.png"
+
+  # 订单状态颜色验证
+  order_status_colors:
+    - status: "待付款"
+      expected_color_name: "orange"
+      css_property: "color"
+      note: "待付款状态应为橙色"
+    - status: "已付款"
+      expected_color_name: "blue"
+      css_property: "color"
+      note: "已付款状态应为蓝色"
+    - status: "已发货"
+      expected_color_name: "green"
+      css_property: "color"
+      note: "已发货状态应为绿色"
+    - status: "已取消"
+      expected_color_name: "gray"
+      css_property: "color"
+      note: "已取消状态应为灰色"
+    - status: "退款中"
+      expected_color_name: "red"
+      css_property: "color"
+      note: "退款中状态应为红色"
+
+# ========== 七、图片识别配置参考 ==========
+
+config_reference:
+  # 模板匹配阈值推荐
+  template_threshold:
+    - scene: "精确匹配（Logo、品牌图标）"
+      threshold: 0.85
+    - scene: "正常匹配（按钮、图标）"
+      threshold: 0.8
+    - scene: "宽松匹配（截图可能模糊）"
+      threshold: 0.6
+
+  # SSIM 相似度阈值推荐
+  ssim_threshold:
+    - scene: "完全一致（像素级对比）"
+      threshold: 0.99
+    - scene: "高度相似（正常回归测试）"
+      threshold: 0.95
+    - scene: "允许微小变化（动态内容）"
+      threshold: 0.90
+    - scene: "仅检测布局结构"
+      threshold: 0.80
+
+  # 特征点匹配参数推荐
+  feature_params:
+    - scene: "高精度（重要元素）"
+      min_match_count: 15
+    - scene: "正常精度（一般图标）"
+      min_match_count: 10
+    - scene: "低精度（模糊/复杂背景）"
+      min_match_count: 5

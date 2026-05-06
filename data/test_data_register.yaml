@@ -1,0 +1,60 @@
+# ============================
+# 注册测试数据
+# ============================
+
+# 有效注册数据
+valid_register:
+  username: "auto_test_user"
+  phone: "13800138000"
+  password: "Test@123456"
+  confirm_password: "Test@123456"
+  sms_code: "888888"       # 测试环境万能验证码
+
+# 异常注册场景
+invalid_register_cases:
+  - case_name: "用户名已存在"
+    username: "admin"
+    phone: "13800138001"
+    password: "Test@123456"
+    expected_msg: "用户名已存在"
+
+  - case_name: "手机号已注册"
+    username: "new_user_001"
+    phone: "13800138000"
+    password: "Test@123456"
+    expected_msg: "该手机号已注册"
+
+  - case_name: "密码太短"
+    username: "new_user_002"
+    phone: "13800138002"
+    password: "123"
+    expected_msg: "密码长度不能少于6位"
+
+  - case_name: "两次密码不一致"
+    username: "new_user_003"
+    phone: "13800138003"
+    password: "Test@123456"
+    confirm_password: "Different@123"
+    expected_msg: "两次输入的密码不一致"
+
+  - case_name: "手机号格式错误"
+    username: "new_user_004"
+    phone: "12345"
+    password: "Test@123456"
+    expected_msg: "手机号格式不正确"
+
+  - case_name: "验证码错误"
+    username: "new_user_005"
+    phone: "13800138005"
+    password: "Test@123456"
+    sms_code: "000000"
+    expected_msg: "验证码错误或已过期"
+
+# 未勾选协议
+terms_not_checked:
+  expected_msg: "请先同意用户协议和隐私政策"
+
+# 短信验证码测试
+sms_code_test:
+  send_interval: 60  # 发送间隔秒数
+  expire_seconds: 300  # 验证码过期时间

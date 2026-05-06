@@ -1,0 +1,57 @@
+# ============================
+# 搜索测试数据
+# ============================
+
+# 基础搜索
+basic_search:
+  - keyword: "iPhone 16"
+    expect_results: true
+    min_result_count: 1
+
+  - keyword: "测试商品不存在xyz"
+    expect_results: false
+
+  - keyword: "笔记本电脑"
+    expect_results: true
+    min_result_count: 5
+
+# 搜索排序
+sort_test:
+  - keyword: "手机"
+    sort_type: "price_asc"
+    verify_rule: "first_price <= last_price"
+
+  - keyword: "手机"
+    sort_type: "price_desc"
+    verify_rule: "first_price >= last_price"
+
+  - keyword: "手机"
+    sort_type: "sales"
+    verify_rule: "sales_descending"
+
+# 搜索筛选
+filter_test:
+  - keyword: "手机"
+    filter:
+      price_min: 1000
+      price_max: 5000
+    expect_results: true
+    verify: "所有结果价格在范围内"
+
+  - keyword: "手机"
+    filter:
+      price_min: 99999
+      price_max: 999999
+    expect_results: false
+
+# 高级搜索
+advanced_search:
+  - keyword: "华为"
+    category: "手机"
+    brand: "华为"
+    expect_results: true
+
+# 搜索历史
+search_history:
+  - keywords: ["iPhone", "华为", "小米", "Samsung"]
+    max_history: 10

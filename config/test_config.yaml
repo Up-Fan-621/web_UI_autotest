@@ -1,0 +1,36 @@
+# test:
+#   base_url: https://test.example.com
+#   api_url: https://api-test.example.com
+#   db_name: test_db
+# staging:
+#   base_url: https://staging.example.com
+#   api_url: https://api-staging.example.com
+#   db_name: staging_db
+# prod:
+#   base_url: https://www.example.com
+#   api_url: https://api.example.com
+#   db_name: prod_db
+
+# --- 浏览器配置 ---
+browser: chrome
+headless: true
+implicit_wait: 10
+explicit_wait: 15
+page_load_timeout: 30
+
+# --- 截图配置 ---
+screenshot_on_fail: true
+
+# --- 图片识别 ---
+image_match_threshold: 0.8
+ocr_lang: chi_sim+eng
+
+# --- 邮件通知 ---
+email:
+  smtp_host: smtp.company.com
+  smtp_port: 465
+  smtp_user: qa-notice@company.com
+  smtp_password: ${SMTP_PASSWORD}
+  notify_list:
+    - qa-team@company.com
+    - dev-team@company.com

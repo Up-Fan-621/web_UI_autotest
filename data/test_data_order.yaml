@@ -1,0 +1,76 @@
+# ============================
+# 订单测试数据
+# ============================
+
+# 通过 API 预创建的测试订单
+pre_created_orders:
+  - user_id: 1001
+    product_id: 2001
+    product_name: "测试商品A"
+    quantity: 2
+    unit_price: 99.00
+    order_status: "pending"
+    remark: "自动化测试订单-pending"
+
+  - user_id: 1001
+    product_id: 2002
+    product_name: "测试商品B"
+    quantity: 1
+    unit_price: 299.00
+    order_status: "paid"
+    remark: "自动化测试订单-paid"
+
+  - user_id: 1001
+    product_id: 2003
+    product_name: "测试商品C"
+    quantity: 3
+    unit_price: 199.00
+    order_status: "shipped"
+    remark: "自动化测试订单-shipped"
+
+  - user_id: 1001
+    product_id: 2004
+    product_name: "测试商品D"
+    quantity: 1
+    unit_price: 499.00
+    order_status: "completed"
+    remark: "自动化测试订单-completed"
+
+# 订单标签页测试数据
+tab_test:
+  - tab: "all"
+    expected_min_count: 4
+  - tab: "pending"
+    expected_min_count: 1
+  - tab: "paid"
+    expected_min_count: 1
+  - tab: "shipped"
+    expected_min_count: 1
+  - tab: "completed"
+    expected_min_count: 1
+  - tab: "cancelled"
+    expected_count: 0
+
+# 下单测试数据
+create_order_test:
+  product_id: 3001
+  product_name: "新测试商品"
+  quantity: 2
+  expected_total: 198.00
+
+# 取消订单测试
+cancel_order_test:
+  order_id: "TEST_CANCEL_001"
+  expected_status_after: "cancelled"
+
+# 支付订单测试
+pay_order_test:
+  order_id: "TEST_PAY_001"
+  payment_method: "alipay"
+  expected_status_after: "paid"
+
+# 清理用的用户 ID
+cleanup:
+  test_user_ids: [1001, 1002]
+  delete_before_test: true
+  delete_after_test: true
